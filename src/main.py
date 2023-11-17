@@ -1,17 +1,6 @@
 from collections import deque
 
 
-cities = ['Lviv', 'Stryi', 'Dolina', 'Ternopil', 'Dubno', 'Chortkiv']
-warehouses = ['Warehouse_1', 'Warehouse_2']
-
-pipelines = [
-    ['Lviv', 'Stryi'],
-    ['Dolina', 'Lviv'],
-    ['Ternopil', 'Dubno'],
-    ['Chortkiv', 'Ternopil']
-]
-
-
 def find_way_to_transport_gas(cities, warehouses, pipelines):
     graph = {}
     for city in cities + warehouses:
@@ -35,7 +24,3 @@ def find_way_to_transport_gas(cities, warehouses, pipelines):
         if current_cities:
             result.append([warehouse, current_cities])
     return result
-
-
-result = find_way_to_transport_gas(cities, warehouses, pipelines)
-print(result)
