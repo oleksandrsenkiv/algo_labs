@@ -1,35 +1,41 @@
 from collections import deque
 
-graph = {}
-with open("input.txt", 'r') as file:
-    for line in file:
-        parts = line.strip().split(':')
-        vertex = int(parts[0])
-        neighbors = [int(n) for n in parts[1].split()]
-        graph[vertex] = neighbors
+
+cities = ['Lviv', 'Stryi', 'Dolina', 'Ternopil', 'Dubno', 'Chortkiv']
+warehouses = ['Warehouse_1', 'Warehouse_2']
+
+pipelines = [
+    ['Lviv', 'Stryi'],
+    ['Dolina', 'Lviv'],
+    ['Ternopil', 'Dubno'],
+    ['Chortkiv', 'Ternopil']
+]
 
 
-def find_root_vertex(graph):
-    vertices = set(graph.keys())
-    num_vertices = len(vertices)
-    for start_vertex in graph:
+def find_way_to_transport_gas(cities, warehouses, pipelines):
+    graph = {}
+    for city in cities + warehouses:
+        graph[city] = []
+    for pipeline in pipelines:
+        graph[pipeline[0]].append(pipeline[1])
+    result = []
+    for warehouse in warehouses:
         visited = set()
-        queue = deque([start_vertex])
-        visited_idx = 0
+        queue = deque([warehouse])
+        current_cities = cities.copy()
+        current_cities.insert(0, warehouse)
         while queue:
             vertex = queue.popleft()
             if vertex not in visited:
                 visited.add(vertex)
-                visited_idx += 1
-                if visited_idx == num_vertices:
-                    return start_vertex
+                current_cities.remove(vertex)
                 for neighbor in graph[vertex]:
                     if neighbor not in visited:
                         queue.append(neighbor)
-    return -1
+        if current_cities:
+            result.append([warehouse, current_cities])
+    return result
 
 
-result1 = find_root_vertex(graph)
-
-with open("output.txt", 'w') as output_file:
-    output_file.write(str(result1))
+result = find_way_to_transport_gas(cities, warehouses, pipelines)
+print(result)
