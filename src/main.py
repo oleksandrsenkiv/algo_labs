@@ -1,41 +1,42 @@
-from collections import deque
+
+class Node:
+    def __init__(self):
+        self.is_end_of_string = False
+        self.children = {}
 
 
-cities = ['Lviv', 'Stryi', 'Dolina', 'Ternopil', 'Dubno', 'Chortkiv']
-warehouses = ['Warehouse_1', 'Warehouse_2']
+class Trie:
+    def __init__(self):
+        self.root = Node()
 
-pipelines = [
-    ['Lviv', 'Stryi'],
-    ['Dolina', 'Lviv'],
-    ['Ternopil', 'Dubno'],
-    ['Chortkiv', 'Ternopil']
-]
+    def add_pattern(self, pattern):
+        node = self.root
+        for char in pattern:
+            if char not in node.children:
+                node.children[char] = Node()
+            node = node.children[char]
+        node.is_end_of_string = True
 
+    def find_word(self, word):
+        node = self.root
+        for char in word:
+            if char in node.children:
+                node = node.children[char]
+            else:
+                return node.is_end_of_string
+        return node.is_end_of_string
 
-def find_way_to_transport_gas(cities, warehouses, pipelines):
-    graph = {}
-    for city in cities + warehouses:
-        graph[city] = []
-    for pipeline in pipelines:
-        graph[pipeline[0]].append(pipeline[1])
-    result = []
-    for warehouse in warehouses:
-        visited = set()
-        queue = deque([warehouse])
-        current_cities = cities.copy()
-        current_cities.insert(0, warehouse)
-        while queue:
-            vertex = queue.popleft()
-            if vertex not in visited:
-                visited.add(vertex)
-                current_cities.remove(vertex)
-                for neighbor in graph[vertex]:
-                    if neighbor not in visited:
-                        queue.append(neighbor)
-        if current_cities:
-            result.append([warehouse, current_cities])
-    return result
+    def find_prefix(self, pref):
+        node = self.root
+        for char in pref:
+            if char not in node.children:
+                return False
+            node = node.children[char]
+        return True
 
 
-result = find_way_to_transport_gas(cities, warehouses, pipelines)
-print(result)
+def create_trie(patterns):
+    trie = Trie()
+    for pattern in patterns:
+        trie.add_pattern(pattern)
+    return trie
